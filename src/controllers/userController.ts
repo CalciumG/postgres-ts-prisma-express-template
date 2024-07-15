@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { getAllUsers, createUser } from "../services/userService";
-import { NewUserSchema } from "../schemas/userSchema";
+import { getAllUsers, createUser, deleteUser } from "../services/userService";
 import { validateAndParse } from "../utils/validateAndParseRequest";
+import { NewUserSchema } from "../schemas/userSchema";
 
 export const getUsers = async (req: Request, res: Response) => {
   try {
@@ -19,5 +19,15 @@ export const addUser = async (req: Request, res: Response) => {
     res.status(201).json(newUser);
   } catch (error) {
     res.status(500).json({ error: "Failed to create user" });
+  }
+};
+
+export const removeUser = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    await deleteUser(parseInt(id, 10));
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete user" });
   }
 };

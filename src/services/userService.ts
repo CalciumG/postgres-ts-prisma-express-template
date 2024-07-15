@@ -11,3 +11,9 @@ export const createUser = async (username: string) => {
     data: { username },
   });
 };
+
+export const deleteUser = async (id: number) => {
+  return await prisma.user.delete({
+    where: { id },
+  });
+};

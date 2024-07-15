@@ -50,6 +50,31 @@ registry.registerPath({
   },
 });
 
+registry.registerPath({
+  method: "delete",
+  path: "/api/users/{id}",
+  summary: "Delete a user",
+  parameters: [
+    {
+      name: "id",
+      in: "path",
+      required: true,
+      schema: {
+        type: "integer",
+        example: 1,
+      },
+    },
+  ],
+  responses: {
+    204: {
+      description: "User deleted successfully",
+    },
+    404: {
+      description: "User not found",
+    },
+  },
+});
+
 const generator = new OpenApiGeneratorV3(registry.definitions);
 
 export const openApiDoc = generator.generateDocument({
