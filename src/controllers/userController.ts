@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { getAllUsers, createUser, deleteUser } from "../services/userService";
 import { validateAndParse } from "../utils/validateAndParseRequest";
-import { NewUserSchema } from "../schemas/userSchema";
+import { NewUserSchema } from "../models/userSchema";
 
 export const getUsers = async (req: Request, res: Response) => {
   try {
