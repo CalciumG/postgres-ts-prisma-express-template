@@ -2,7 +2,7 @@ import {
   OpenAPIRegistry,
   OpenApiGeneratorV3,
 } from "@asteasolutions/zod-to-openapi";
-import { UserSchema, NewUserSchema } from "../models/userSchema";
+import { UserSchema, NewUserSchema } from "../models/User/userSchema";
 
 const registry = new OpenAPIRegistry();
 
