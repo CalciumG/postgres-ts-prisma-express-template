@@ -1,26 +1,68 @@
-import express from "express";
-import fs from "fs";
-import swaggerUi from "swagger-ui-express";
-import YAML from "yaml";
+import {
+  OpenAPIRegistry,
+  OpenApiGeneratorV3,
+} from "@asteasolutions/zod-to-openapi";
+import { UserSchema, NewUserSchema } from "../schemas/userSchema";
 
-/**
- * Generates swagger documentation
- * @param apiSpecPath The absolute path to the OpenApi YAML
- * @param app The express app
- * @param route The route to display the swagger docs
- */
-export const useSwaggerDocs = (
-  apiSpecPath: string,
-  app: express.Application,
-  route = "/api-docs"
-) => {
-  try {
-    const file = fs.readFileSync(apiSpecPath, "utf8");
-    const swaggerDocument = YAML.parse(file);
-    app.use(route, swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-  } catch (err) {
-    if (err instanceof Error) {
-      console.error("Could not generate swagger documents", err);
-    }
-  }
-};
+const registry = new OpenAPIRegistry();
+
+registry.register("User", UserSchema);
+registry.register("NewUser", NewUserSchema);
+
+registry.registerPath({
+  method: "get",
+  path: "/api/users",
+  summary: "Get all users",
+  responses: {
+    200: {
+      description: "A list of users",
+      content: {
+        "application/json": {
+          schema: UserSchema.array(),
+        },
+      },
+    },
+  },
+});
+
+registry.registerPath({
+  method: "post",
+  path: "/api/users",
+  summary: "Create a new user",
+  request: {
+    body: {
+      content: {
+        "application/json": {
+          schema: NewUserSchema,
+        },
+      },
+    },
+  },
+  responses: {
+    201: {
+      description: "The created user",
+      content: {
+        "application/json": {
+          schema: UserSchema,
+        },
+      },
+    },
+  },
+});
+
+const generator = new OpenApiGeneratorV3(registry.definitions);
+
+export const openApiDoc = generator.generateDocument({
+  openapi: "3.0.3",
+  info: {
+    title: "Example App",
+    version: "0.0.0",
+    description: "Example App API",
+  },
+  servers: [
+    {
+      url: "http://localhost:3000",
+      description: "Local",
+    },
+  ],
+});
