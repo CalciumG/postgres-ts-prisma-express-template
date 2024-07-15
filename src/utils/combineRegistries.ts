@@ -12,9 +12,5 @@ export const combineRegistries = (
     }
   });
 
-  console.log(
-    "Combined Registry Definitions:",
-    (combinedRegistry as any)._definitions
-  );
   return combinedRegistry;
 };
