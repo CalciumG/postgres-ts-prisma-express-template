@@ -4,6 +4,7 @@ import cors from "cors";
 import userRoutes from "./routes/userRoutes";
 import swaggerUi from "swagger-ui-express";
 import { openApiDoc } from "./utils/swagger";
+import { errorHandler } from "./middlewares/errorHandler";
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ const corsOptions = {
 // Middleware
 app.use(express.json());
 app.use(cors(corsOptions));
+app.use(errorHandler);
 
 // Routes
 app.use("/api", userRoutes);
