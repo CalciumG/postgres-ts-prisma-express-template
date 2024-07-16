@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
-import { authenticateUser, refreshAccessToken } from "../services/authService";
+
 import { createUser } from "../services/userService";
-import { validateAndParse } from "../utils/validateAndParseRequest";
+import { validateAndParse } from "../../../utils/validateAndParseRequest";
 import { NewUserSchema } from "../models/User/userSchema";
+import { authenticateUser, refreshAccessToken } from "../services/authService";
 
 export const login = async (req: Request, res: Response) => {
   const { username, password } = req.body;

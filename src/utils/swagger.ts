@@ -1,9 +1,9 @@
 import fs from "fs";
 import path from "path";
 import { OpenApiGeneratorV3 } from "@asteasolutions/zod-to-openapi";
-import { authRegistry } from "../registry/authRegistry";
+import { authRegistry } from "../modules/auth/registry/authRegistry";
 import { combineRegistries } from "./combineRegistries";
-import { protectedRegistry } from "../registry/protectedRegistry";
+import { protectedRegistry } from "../modules/protected/registry/protectedRegistry";
 
 const combinedRegistry = combineRegistries(authRegistry, protectedRegistry);
 

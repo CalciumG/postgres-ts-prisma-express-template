@@ -1,11 +1,11 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import authRoutes from "./routes/authRoutes";
 import swaggerUi from "swagger-ui-express";
 import { openApiDoc } from "./utils/swagger";
 import { errorHandler } from "./middlewares/errorHandler";
-import protectedRoutes from "./routes/protectedRoutes";
+import authRoutes from "./modules/auth/routes/authRoutes";
+import protectedRoutes from "./modules/protected/routes/protectedRoutes";
 
 dotenv.config();
 
