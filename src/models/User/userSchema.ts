@@ -7,6 +7,7 @@ export const UserSchema = z
   .object({
     id: z.number().openapi({ example: 1 }),
     username: z.string().openapi({ example: "JohnDoe" }),
+    password: z.string().openapi({ example: "password123" }),
     createdAt: z.date().openapi({ example: "2023-07-15T10:00:00.000Z" }),
     updatedAt: z.date().openapi({ example: "2023-07-15T10:00:00.000Z" }),
   })
@@ -15,6 +16,7 @@ export const UserSchema = z
 export const NewUserSchema = z
   .object({
     username: z.string().openapi({ example: "JohnDoe" }),
+    password: z.string().openapi({ example: "password123" }),
   })
   .openapi("NewUser");
 

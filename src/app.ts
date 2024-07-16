@@ -1,10 +1,11 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import userRoutes from "./routes/userRoutes";
+import authRoutes from "./routes/authRoutes";
 import swaggerUi from "swagger-ui-express";
 import { openApiDoc } from "./utils/swagger";
 import { errorHandler } from "./middlewares/errorHandler";
+import protectedRoutes from "./routes/protectedRoutes";
 
 dotenv.config();
 
@@ -22,7 +23,8 @@ app.use(cors(corsOptions));
 app.use(errorHandler);
 
 // Routes
-app.use("/api", userRoutes);
+app.use("/auth", authRoutes);
+app.use("/api", protectedRoutes);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(openApiDoc));
 

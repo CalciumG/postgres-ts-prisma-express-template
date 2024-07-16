@@ -11,6 +11,11 @@
       "description": "Local"
     }
   ],
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
   "components": {
     "schemas": {
       "User": {
@@ -24,6 +29,10 @@
             "type": "string",
             "example": "JohnDoe"
           },
+          "password": {
+            "type": "string",
+            "example": "password123"
+          },
           "createdAt": {
             "type": "string",
             "example": "2023-07-15T10:00:00.000Z"
@@ -36,6 +45,7 @@
         "required": [
           "id",
           "username",
+          "password",
           "createdAt",
           "updatedAt"
         ]
@@ -46,42 +56,33 @@
           "username": {
             "type": "string",
             "example": "JohnDoe"
+          },
+          "password": {
+            "type": "string",
+            "example": "password123"
           }
         },
         "required": [
-          "username"
+          "username",
+          "password"
         ]
       }
     },
-    "parameters": {}
+    "parameters": {},
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
   },
   "paths": {
-    "/api/users": {
-      "get": {
-        "summary": "Get all users",
-        "tags": [
-          "Users"
-        ],
-        "responses": {
-          "200": {
-            "description": "A list of users",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/User"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
+    "/auth/register": {
       "post": {
-        "summary": "Create a new user",
+        "summary": "Register a new user",
         "tags": [
-          "Users"
+          "Auth"
         ],
         "requestBody": {
           "content": {
@@ -106,29 +107,159 @@
         }
       }
     },
-    "/api/users/{id}": {
-      "delete": {
-        "summary": "Delete a user",
+    "/auth/login": {
+      "post": {
+        "summary": "Login a user",
         "tags": [
-          "Users"
+          "Auth"
         ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "example": 1
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewUser"
+              }
             }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The access and refresh tokens",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "accessToken": {
+                      "type": "string",
+                      "example": "your_access_token"
+                    },
+                    "refreshToken": {
+                      "type": "string",
+                      "example": "your_refresh_token"
+                    }
+                  },
+                  "required": [
+                    "accessToken",
+                    "refreshToken"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid username or password"
+          }
+        }
+      }
+    },
+    "/auth/refresh-token": {
+      "post": {
+        "summary": "Refresh access token",
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "refreshToken": {
+                    "type": "string",
+                    "example": "your_refresh_token"
+                  }
+                },
+                "required": [
+                  "refreshToken"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "New access token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "accessToken": {
+                      "type": "string",
+                      "example": "your_access_token"
+                    }
+                  },
+                  "required": [
+                    "accessToken"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid refresh token"
+          }
+        }
+      }
+    },
+    "/api/protected": {
+      "get": {
+        "summary": "Get protected resource",
+        "tags": [
+          "Protected"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
           }
         ],
         "responses": {
-          "204": {
-            "description": "User deleted successfully"
+          "200": {
+            "description": "A protected resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "This is a protected route"
+                    },
+                    "user": {
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/User"
+                        },
+                        {
+                          "properties": {
+                            "userId": {
+                              "type": "number",
+                              "example": 1
+                            },
+                            "username": {
+                              "type": "string",
+                              "example": "JohnDoe"
+                            }
+                          },
+                          "required": [
+                            "userId",
+                            "username"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "message",
+                    "user"
+                  ]
+                }
+              }
+            }
           },
-          "404": {
-            "description": "User not found"
+          "401": {
+            "description": "Unauthorized"
           }
         }
       }
