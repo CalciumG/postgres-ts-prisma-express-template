@@ -59,3 +59,9 @@ npx prisma migrate deploy
 ```bash
 npm start
 ```
+
+5. Make sure the prisma client is generated:
+
+```bash
+npx prisma generate
+```
